@@ -24,7 +24,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// map merchant endpoints
-app.MapMerchantsEndpoints();
+// map endpoints
+app.MapMerchantsEndpoints()
+	.MapProductsEndpoints()
+	.MapUsersEndpoints()
+	.MapOrdersEndpoints()
+	.MapOrderItemsEndpoints();
 
 app.Run();
