@@ -1,4 +1,4 @@
-name: Build and Deploy .NET 10 API + UI
+name: Build and Deploy .NET 10 API
 
 on:
   push:
