@@ -1,0 +1,3 @@
+namespace FoodDelivery.API.Features.OrderItems.DTOs;
+
+public record OrderItemDto(int OrderItemId, int OrderId, int ProductId, int Quantity, decimal Price);
