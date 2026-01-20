@@ -1,10 +1,11 @@
 using FoodDelivery.Domain.Data;
 using FoodDelivery.Domain.Entities;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 
 namespace FoodDelivery.API.Features.Payments.Commands;
 
-public record CreatePaymentCommand(int OrderId, string PaymentMethod, decimal Amount) : IRequest<int>;
+public record CreatePaymentCommand(int OrderId, PaymentMethodEnum PaymentMethod, decimal Amount) : IRequest<int>;
 
 public class CreatePaymentHandler(FoodDeliveryDbContext db) : IRequestHandler<CreatePaymentCommand, int>
 {
@@ -13,8 +14,8 @@ public class CreatePaymentHandler(FoodDeliveryDbContext db) : IRequestHandler<Cr
 		var entity = new Payment
 		{
 			OrderId = request.OrderId,
-			PaymentMethod = request.PaymentMethod,
-			PaymentStatus = "Pending",
+			PaymentMethodId = (int)request.PaymentMethod,
+			PaymentStatusId = (int)PaymentStatusEnum.Pending,
 			Amount = request.Amount,
 			PaymentDate = DateTime.Now
 		};
@@ -25,3 +26,5 @@ public class CreatePaymentHandler(FoodDeliveryDbContext db) : IRequestHandler<Cr
 		return entity.PaymentId;
 	}
 }
+
+

@@ -13,19 +13,21 @@ public partial class Order
 
     public DateTime? OrderDate { get; set; }
 
-    public string? Status { get; set; }
-
     public decimal TotalAmount { get; set; }
 
     public string Address { get; set; } = null!;
 
     public DateTime? DeliveryTime { get; set; }
 
+    public int OrderStatusId { get; set; }
+
     public virtual ICollection<DriverAssignment> DriverAssignments { get; set; } = new List<DriverAssignment>();
 
     public virtual Merchant Merchant { get; set; } = null!;
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+    public virtual OrderStatus OrderStatus { get; set; } = null!;
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 

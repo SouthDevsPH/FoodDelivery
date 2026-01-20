@@ -1,5 +1,6 @@
 using FoodDelivery.Domain.Data;
 using FoodDelivery.Domain.Entities;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 
 namespace FoodDelivery.API.Features.DriverAssignments.Commands;
@@ -15,7 +16,7 @@ public class CreateDriverAssignmentHandler(FoodDeliveryDbContext db) : IRequestH
 			OrderId = request.OrderId,
 			DriverId = request.DriverId,
 			AssignmentDate = DateTime.Now,
-			DeliveryStatus = "Assigned"
+			DeliveryStatusId = (int)DeliveryStatusEnum.Assigned
 		};
 
 		db.DriverAssignments.Add(entity);
@@ -24,3 +25,4 @@ public class CreateDriverAssignmentHandler(FoodDeliveryDbContext db) : IRequestH
 		return entity.AssignmentId;
 	}
 }
+

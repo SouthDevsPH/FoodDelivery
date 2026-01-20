@@ -13,7 +13,9 @@ public partial class DriverAssignment
 
     public DateTime? AssignmentDate { get; set; }
 
-    public string? DeliveryStatus { get; set; }
+    public int DeliveryStatusId { get; set; }
+
+    public virtual DeliveryStatus DeliveryStatus { get; set; } = null!;
 
     public virtual User Driver { get; set; } = null!;
 

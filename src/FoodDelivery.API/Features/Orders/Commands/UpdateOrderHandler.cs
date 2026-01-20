@@ -1,9 +1,10 @@
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 
 namespace FoodDelivery.API.Features.Orders.Commands;
 
-public record UpdateOrderCommand(int OrderId, string? Status, decimal? TotalAmount, string? Address, DateTime? DeliveryTime) : IRequest<bool>;
+public record UpdateOrderCommand(int OrderId, OrderStatusEnum? OrderStatus, decimal? TotalAmount, string? Address, DateTime? DeliveryTime) : IRequest<bool>;
 
 public class UpdateOrderHandler(FoodDeliveryDbContext db) : IRequestHandler<UpdateOrderCommand, bool>
 {
@@ -16,9 +17,9 @@ public class UpdateOrderHandler(FoodDeliveryDbContext db) : IRequestHandler<Upda
 			return false;
 		}
 
-		if (request.Status is not null)
+		if (request.OrderStatus.HasValue)
 		{
-			entity.Status = request.Status;
+			entity.OrderStatusId = (int)request.OrderStatus.Value;
 		}
 
 		if (request.TotalAmount.HasValue)
@@ -41,3 +42,4 @@ public class UpdateOrderHandler(FoodDeliveryDbContext db) : IRequestHandler<Upda
 		return true;
 	}
 }
+

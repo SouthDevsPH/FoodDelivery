@@ -1,3 +1,7 @@
+using FoodDelivery.Domain.Enums;
+
 namespace FoodDelivery.API.Features.Payments.DTOs;
 
-public record PaymentDto(int PaymentId, int OrderId, string PaymentMethod, string? PaymentStatus, decimal Amount, DateTime? PaymentDate);
+public record PaymentDto(int PaymentId, int OrderId, PaymentMethodEnum PaymentMethod, PaymentStatusEnum PaymentStatus, decimal Amount, DateTime? PaymentDate);
+
+

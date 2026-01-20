@@ -1,9 +1,10 @@
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 
 namespace FoodDelivery.API.Features.DriverAssignments.Commands;
 
-public record UpdateDriverAssignmentCommand(int AssignmentId, string? DeliveryStatus) : IRequest<bool>;
+public record UpdateDriverAssignmentCommand(int AssignmentId, DeliveryStatusEnum? DeliveryStatus) : IRequest<bool>;
 
 public class UpdateDriverAssignmentHandler(FoodDeliveryDbContext db) : IRequestHandler<UpdateDriverAssignmentCommand, bool>
 {
@@ -16,9 +17,9 @@ public class UpdateDriverAssignmentHandler(FoodDeliveryDbContext db) : IRequestH
 			return false;
 		}
 
-		if (request.DeliveryStatus is not null)
+		if (request.DeliveryStatus.HasValue)
 		{
-			entity.DeliveryStatus = request.DeliveryStatus;
+			entity.DeliveryStatusId = (int)request.DeliveryStatus.Value;
 		}
 
 		await db.SaveChangesAsync(cancellationToken);
@@ -26,3 +27,4 @@ public class UpdateDriverAssignmentHandler(FoodDeliveryDbContext db) : IRequestH
 		return true;
 	}
 }
+

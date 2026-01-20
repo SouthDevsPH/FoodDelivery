@@ -1,5 +1,6 @@
 using FoodDelivery.API.Features.Payments.DTOs;
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,9 @@ public class GetPaymentsHandler(FoodDeliveryDbContext db) : IRequestHandler<GetP
 	public async Task<List<PaymentDto>> Handle(GetPaymentsQuery request, CancellationToken cancellationToken)
 	{
 		return await db.Payments.AsNoTracking()
-			.Select(p => new PaymentDto(p.PaymentId, p.OrderId, p.PaymentMethod, p.PaymentStatus, p.Amount, p.PaymentDate))
+			.Select(p => new PaymentDto(p.PaymentId, p.OrderId, (PaymentMethodEnum)p.PaymentMethodId, (PaymentStatusEnum)p.PaymentStatusId, p.Amount, p.PaymentDate))
 			.ToListAsync(cancellationToken);
 	}
+
 }
+

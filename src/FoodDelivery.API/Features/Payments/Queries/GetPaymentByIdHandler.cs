@@ -1,5 +1,6 @@
 using FoodDelivery.API.Features.Payments.DTOs;
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,8 @@ public class GetPaymentByIdHandler(FoodDeliveryDbContext db) : IRequestHandler<G
 			return null;
 		}
 
-		return new PaymentDto(p.PaymentId, p.OrderId, p.PaymentMethod, p.PaymentStatus, p.Amount, p.PaymentDate);
+		return new PaymentDto(p.PaymentId, p.OrderId, (PaymentMethodEnum)p.PaymentMethodId, (PaymentStatusEnum)p.PaymentStatusId, p.Amount, p.PaymentDate);
 	}
+
 }
+

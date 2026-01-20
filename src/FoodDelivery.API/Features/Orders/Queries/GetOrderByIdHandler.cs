@@ -1,5 +1,6 @@
 using FoodDelivery.API.Features.Orders.DTOs;
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ public class GetOrderByIdHandler(FoodDeliveryDbContext db) : IRequestHandler<Get
 			return null;
 		}
 
-		return new OrderDto(o.OrderId, o.UserId, o.MerchantId, o.OrderDate, o.Status, o.TotalAmount, o.Address, o.DeliveryTime);
+		return new OrderDto(o.OrderId, o.UserId, o.MerchantId, o.OrderDate, (OrderStatusEnum)o.OrderStatusId, o.TotalAmount, o.Address, o.DeliveryTime);
 	}
 }
+

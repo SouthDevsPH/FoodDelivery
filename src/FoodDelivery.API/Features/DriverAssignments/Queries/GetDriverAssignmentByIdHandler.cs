@@ -1,5 +1,6 @@
 using FoodDelivery.API.Features.DriverAssignments.DTOs;
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ public class GetDriverAssignmentByIdHandler(FoodDeliveryDbContext db) : IRequest
 			return null;
 		}
 
-		return new DriverAssignmentDto(da.AssignmentId, da.OrderId, da.DriverId, da.AssignmentDate, da.DeliveryStatus);
+		return new DriverAssignmentDto(da.AssignmentId, da.OrderId, da.DriverId, da.AssignmentDate, (DeliveryStatusEnum)da.DeliveryStatusId);
 	}
 }
+

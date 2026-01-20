@@ -1,9 +1,10 @@
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 
 namespace FoodDelivery.API.Features.Payments.Commands;
 
-public record UpdatePaymentCommand(int PaymentId, string? PaymentStatus) : IRequest<bool>;
+public record UpdatePaymentCommand(int PaymentId, PaymentStatusEnum? PaymentStatus) : IRequest<bool>;
 
 public class UpdatePaymentHandler(FoodDeliveryDbContext db) : IRequestHandler<UpdatePaymentCommand, bool>
 {
@@ -16,9 +17,9 @@ public class UpdatePaymentHandler(FoodDeliveryDbContext db) : IRequestHandler<Up
 			return false;
 		}
 
-		if (request.PaymentStatus is not null)
+		if (request.PaymentStatus.HasValue)
 		{
-			entity.PaymentStatus = request.PaymentStatus;
+			entity.PaymentStatusId = (int)request.PaymentStatus.Value;
 		}
 
 		await db.SaveChangesAsync(cancellationToken);
@@ -26,3 +27,4 @@ public class UpdatePaymentHandler(FoodDeliveryDbContext db) : IRequestHandler<Up
 		return true;
 	}
 }
+

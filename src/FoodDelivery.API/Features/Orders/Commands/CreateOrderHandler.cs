@@ -1,5 +1,6 @@
 using FoodDelivery.Domain.Data;
 using FoodDelivery.Domain.Entities;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 
 namespace FoodDelivery.API.Features.Orders.Commands;
@@ -15,7 +16,7 @@ public class CreateOrderHandler(FoodDeliveryDbContext db) : IRequestHandler<Crea
 			UserId = request.UserId,
 			MerchantId = request.MerchantId,
 			OrderDate = DateTime.Now,
-			Status = "Pending",
+			OrderStatusId = (int)OrderStatusEnum.Pending,
 			TotalAmount = request.TotalAmount,
 			Address = request.Address
 		};
@@ -26,3 +27,4 @@ public class CreateOrderHandler(FoodDeliveryDbContext db) : IRequestHandler<Crea
 		return entity.OrderId;
 	}
 }
+

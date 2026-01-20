@@ -9,13 +9,17 @@ public partial class Payment
 
     public int OrderId { get; set; }
 
-    public string PaymentMethod { get; set; } = null!;
-
-    public string? PaymentStatus { get; set; }
-
     public decimal Amount { get; set; }
 
     public DateTime? PaymentDate { get; set; }
 
+    public int PaymentStatusId { get; set; }
+
+    public int? PaymentMethodId { get; set; }
+
     public virtual Order Order { get; set; } = null!;
+
+    public virtual PaymentMethod? PaymentMethod { get; set; }
+
+    public virtual PaymentStatus PaymentStatus { get; set; } = null!;
 }

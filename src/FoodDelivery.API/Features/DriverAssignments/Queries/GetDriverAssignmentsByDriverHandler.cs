@@ -1,5 +1,6 @@
 using FoodDelivery.API.Features.DriverAssignments.DTOs;
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,8 @@ public class GetDriverAssignmentsByDriverHandler(FoodDeliveryDbContext db) : IRe
 	{
 		return await db.DriverAssignments.AsNoTracking()
 			.Where(da => da.DriverId == request.DriverId)
-			.Select(da => new DriverAssignmentDto(da.AssignmentId, da.OrderId, da.DriverId, da.AssignmentDate, da.DeliveryStatus))
+			.Select(da => new DriverAssignmentDto(da.AssignmentId, da.OrderId, da.DriverId, da.AssignmentDate, (DeliveryStatusEnum)da.DeliveryStatusId))
 			.ToListAsync(cancellationToken);
 	}
 }
+

@@ -1,5 +1,6 @@
 using FoodDelivery.API.Features.Orders.DTOs;
 using FoodDelivery.Domain.Data;
+using FoodDelivery.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,8 @@ public class GetOrdersByUserHandler(FoodDeliveryDbContext db) : IRequestHandler<
 	{
 		return await db.Orders.AsNoTracking()
 			.Where(o => o.UserId == request.UserId)
-			.Select(o => new OrderDto(o.OrderId, o.UserId, o.MerchantId, o.OrderDate, o.Status, o.TotalAmount, o.Address, o.DeliveryTime))
+			.Select(o => new OrderDto(o.OrderId, o.UserId, o.MerchantId, o.OrderDate, (OrderStatusEnum)o.OrderStatusId, o.TotalAmount, o.Address, o.DeliveryTime))
 			.ToListAsync(cancellationToken);
 	}
 }
+
