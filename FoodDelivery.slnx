@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/.github/">
+    <File Path="copilot-instructions.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/FoodDelivery.API/FoodDelivery.API.csproj" />
     <Project Path="src/FoodDelivery.Domain/FoodDelivery.Domain.csproj" />

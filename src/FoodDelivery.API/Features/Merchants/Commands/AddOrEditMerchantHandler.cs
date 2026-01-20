@@ -1,7 +1,6 @@
 using FoodDelivery.Domain.Data;
 using FoodDelivery.Domain.Entities;
 using MediatR;
-using System;
 
 namespace FoodDelivery.API.Features.Merchants.Commands;
 
