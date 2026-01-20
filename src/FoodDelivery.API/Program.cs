@@ -29,6 +29,10 @@ app.MapMerchantsEndpoints()
 	.MapProductsEndpoints()
 	.MapUsersEndpoints()
 	.MapOrdersEndpoints()
-	.MapOrderItemsEndpoints();
+	.MapOrderItemsEndpoints()
+	.MapPaymentsEndpoints()
+	.MapDriverAssignmentsEndpoints()
+	.MapDriverWalletsEndpoints()
+	.MapWalletTransactionsEndpoints();
 
 app.Run();
