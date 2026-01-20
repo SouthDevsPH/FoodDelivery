@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FoodDelivery.API/FoodDelivery.API.csproj" />
+    <Project Path="src/FoodDelivery.Domain/FoodDelivery.Domain.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <File Path="tools/dbsync.bat" />
+  </Folder>
+</Solution>
