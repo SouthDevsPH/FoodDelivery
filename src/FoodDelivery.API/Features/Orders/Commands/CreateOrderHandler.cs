@@ -1,6 +1,6 @@
 using FoodDelivery.Domain.Data;
 using FoodDelivery.Domain.Entities;
-using FoodDelivery.Domain.Enums;
+using FoodDelivery.API.Enums;
 using MediatR;
 
 namespace FoodDelivery.API.Features.Orders.Commands;

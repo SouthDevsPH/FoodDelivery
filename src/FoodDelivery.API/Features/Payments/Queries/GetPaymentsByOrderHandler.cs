@@ -1,6 +1,6 @@
 using FoodDelivery.API.Features.Payments.DTOs;
 using FoodDelivery.Domain.Data;
-using FoodDelivery.Domain.Enums;
+using FoodDelivery.API.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

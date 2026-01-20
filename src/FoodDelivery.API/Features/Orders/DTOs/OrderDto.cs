@@ -1,4 +1,4 @@
-using FoodDelivery.Domain.Enums;
+using FoodDelivery.API.Enums;
 
 namespace FoodDelivery.API.Features.Orders.DTOs;
 
