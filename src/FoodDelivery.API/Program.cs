@@ -2,8 +2,12 @@ using FoodDelivery.API.Endpoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
-
 var builder = WebApplication.CreateBuilder(args);
+
+// Explicitly load configuration files
+builder.Configuration
+	.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+	.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
