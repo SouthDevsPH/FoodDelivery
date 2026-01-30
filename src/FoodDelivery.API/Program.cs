@@ -1,6 +1,9 @@
 using FoodDelivery.API.Endpoints;
+using FoodDelivery.API.Features.Auth.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,16 +12,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    options.SwaggerDoc("v1", new()
     {
         Title = "FoodDelivery API",
         Version = "v1",
-        Description = "A comprehensive food delivery system API with CQRS pattern"
+        Description = "A comprehensive food delivery system API with CQRS pattern - JWT Authentication Enabled"
     });
 
     options.TagActionsBy(api =>
     {
         var route = api.RelativePath ?? "";
+        if (route.StartsWith("api/auth")) return ["Authentication"];
         if (route.StartsWith("api/merchants")) return ["Merchants"];
         if (route.StartsWith("api/products")) return ["Products"];
         if (route.StartsWith("api/users")) return ["Users"];
@@ -39,6 +43,36 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<FoodDelivery.Domain.Data.FoodDeliveryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FoodDeliveryDb")));
 
+// register JWT service
+builder.Services.AddSingleton<IJwtService, JwtService>();
+
+// configure JWT authentication
+var jwtSecretKey = builder.Configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured");
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("JWT Issuer not configured");
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("JWT Audience not configured");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+        ValidateIssuer = true,
+        ValidIssuer = jwtIssuer,
+        ValidateAudience = true,
+        ValidAudience = jwtAudience,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization();
+
 // register MediatR handlers in this assembly
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
@@ -58,7 +92,8 @@ app.UseSwaggerUI(options =>
 app.UseHttpsRedirection();
 
 // map endpoints
-app.MapMerchantsEndpoints()
+app.MapAuthEndpoints()
+    .MapMerchantsEndpoints()
     .MapProductsEndpoints()
     .MapUsersEndpoints()
     .MapOrdersEndpoints()
