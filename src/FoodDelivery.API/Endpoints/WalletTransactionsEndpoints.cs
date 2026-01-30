@@ -8,7 +8,8 @@ public static class WalletTransactionsEndpoints
 {
 	public static IEndpointRouteBuilder MapWalletTransactionsEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("/api/wallettransactions");
+		var group = app.MapGroup("/api/wallettransactions")
+			.RequireAuthorization();
 
 		group.MapGet("", async (IMediator mediator) =>
 		{

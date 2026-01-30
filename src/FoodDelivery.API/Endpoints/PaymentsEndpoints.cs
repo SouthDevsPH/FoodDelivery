@@ -8,7 +8,8 @@ public static class PaymentsEndpoints
 {
 	public static IEndpointRouteBuilder MapPaymentsEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("/api/payments");
+		var group = app.MapGroup("/api/payments")
+			.RequireAuthorization();
 
 		group.MapGet("", async (IMediator mediator) =>
 		{

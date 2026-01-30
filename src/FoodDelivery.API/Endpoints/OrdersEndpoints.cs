@@ -8,7 +8,8 @@ public static class OrdersEndpoints
 {
 	public static IEndpointRouteBuilder MapOrdersEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("/api/orders");
+		var group = app.MapGroup("/api/orders")
+			.RequireAuthorization();
 
 		group.MapGet("", async (IMediator mediator) =>
         {

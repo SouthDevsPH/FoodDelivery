@@ -8,7 +8,8 @@ public static class DriverAssignmentsEndpoints
 {
 	public static IEndpointRouteBuilder MapDriverAssignmentsEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("/api/driverassignments");
+		var group = app.MapGroup("/api/driverassignments")
+			.RequireAuthorization();
 
 		group.MapGet("", async (IMediator mediator) =>
 		{

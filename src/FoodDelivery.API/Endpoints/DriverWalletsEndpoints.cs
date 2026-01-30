@@ -8,7 +8,8 @@ public static class DriverWalletsEndpoints
 {
 	public static IEndpointRouteBuilder MapDriverWalletsEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("/api/driverwallets");
+		var group = app.MapGroup("/api/driverwallets")
+			.RequireAuthorization();
 
 		group.MapGet("", async (IMediator mediator) =>
 		{

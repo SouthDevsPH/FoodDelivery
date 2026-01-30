@@ -8,7 +8,8 @@ public static class MerchantsEndpoints
 {
 	public static IEndpointRouteBuilder MapMerchantsEndpoints(this IEndpointRouteBuilder app)
 	{
-		var group = app.MapGroup("/api/merchants");
+		var group = app.MapGroup("/api/merchants")
+			.RequireAuthorization();
 
 		group.MapGet("", async (IMediator mediator) =>
 		{
