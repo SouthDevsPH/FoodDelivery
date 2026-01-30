@@ -11,7 +11,7 @@ public class GetUserByIdHandler(FoodDeliveryDbContext db) : IRequestHandler<GetU
 {
 	public async Task<UserDto?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
 	{
-		var u = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == request.UserId, cancellationToken);
+		var u = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsActive, cancellationToken);
 
 		if (u is null)
 		{

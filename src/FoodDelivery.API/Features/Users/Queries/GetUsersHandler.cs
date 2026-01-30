@@ -12,6 +12,7 @@ public class GetUsersHandler(FoodDeliveryDbContext db) : IRequestHandler<GetUser
 	public async Task<List<UserDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
 	{
 		return await db.Users.AsNoTracking()
+			.Where(u => u.IsActive)
 			.Select(u => new UserDto(u.UserId, u.Username, u.Email, u.Role))
 			.ToListAsync(cancellationToken);
 	}

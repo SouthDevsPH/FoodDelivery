@@ -19,6 +19,8 @@ public partial class User
 
     public DateTime? UpdatedAt { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual ICollection<DriverAssignment> DriverAssignments { get; set; } = new List<DriverAssignment>();
 
     public virtual ICollection<DriverWallet> DriverWallets { get; set; } = new List<DriverWallet>();
@@ -26,4 +28,8 @@ public partial class User
     public virtual ICollection<Merchant> Merchants { get; set; } = new List<Merchant>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
+    public virtual ICollection<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
 }

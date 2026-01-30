@@ -11,7 +11,7 @@ public class GetMerchantByIdHandler(FoodDeliveryDbContext db) : IRequestHandler<
 {
     public async Task<MerchantDto?> Handle(GetMerchantByIdQuery request, CancellationToken cancellationToken)
     {
-        var m = await db.Merchants.AsNoTracking().FirstOrDefaultAsync(m => m.MerchantId == request.MerchantId, cancellationToken);
+        var m = await db.Merchants.AsNoTracking().FirstOrDefaultAsync(m => m.MerchantId == request.MerchantId && m.IsActive, cancellationToken);
 
         if (m is null)
         {

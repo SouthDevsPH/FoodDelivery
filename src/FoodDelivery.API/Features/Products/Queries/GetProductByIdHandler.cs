@@ -11,7 +11,7 @@ public class GetProductByIdHandler(FoodDeliveryDbContext db) : IRequestHandler<G
 {
 	public async Task<ProductDto?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
 	{
-		var p = await db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.ProductId == request.ProductId, cancellationToken);
+		var p = await db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.ProductId == request.ProductId && p.IsActive, cancellationToken);
 
 		if (p is null)
 		{

@@ -11,5 +11,7 @@ public partial class PaymentMethod
 
     public string? MethodDescription { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }

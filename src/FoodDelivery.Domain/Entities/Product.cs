@@ -21,6 +21,8 @@ public partial class Product
 
     public DateTime? UpdatedAt { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual Merchant Merchant { get; set; } = null!;
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

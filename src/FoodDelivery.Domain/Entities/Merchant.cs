@@ -21,6 +21,12 @@ public partial class Merchant
 
     public DateTime? UpdatedAt { get; set; }
 
+    public bool IsActive { get; set; }
+
+    public virtual ICollection<MerchantAddress> MerchantAddresses { get; set; } = new List<MerchantAddress>();
+
+    public virtual ICollection<MerchantStoreHour> MerchantStoreHours { get; set; } = new List<MerchantStoreHour>();
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();

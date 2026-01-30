@@ -21,6 +21,10 @@ public partial class Order
 
     public int OrderStatusId { get; set; }
 
+    public int? AddressId { get; set; }
+
+    public virtual Address? AddressNavigation { get; set; }
+
     public virtual ICollection<DriverAssignment> DriverAssignments { get; set; } = new List<DriverAssignment>();
 
     public virtual Merchant Merchant { get; set; } = null!;

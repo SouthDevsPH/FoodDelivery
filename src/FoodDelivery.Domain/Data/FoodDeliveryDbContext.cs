@@ -16,6 +16,8 @@ public partial class FoodDeliveryDbContext : DbContext
     {
     }
 
+    public virtual DbSet<Address> Addresses { get; set; }
+
     public virtual DbSet<DeliveryStatus> DeliveryStatuses { get; set; }
 
     public virtual DbSet<DriverAssignment> DriverAssignments { get; set; }
@@ -23,6 +25,10 @@ public partial class FoodDeliveryDbContext : DbContext
     public virtual DbSet<DriverWallet> DriverWallets { get; set; }
 
     public virtual DbSet<Merchant> Merchants { get; set; }
+
+    public virtual DbSet<MerchantAddress> MerchantAddresses { get; set; }
+
+    public virtual DbSet<MerchantStoreHour> MerchantStoreHours { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -42,6 +48,8 @@ public partial class FoodDeliveryDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserAddress> UserAddresses { get; set; }
+
     public virtual DbSet<WalletTransaction> WalletTransactions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -50,6 +58,35 @@ public partial class FoodDeliveryDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Latin1_General_CI_AS");
+
+        modelBuilder.Entity<Address>(entity =>
+        {
+            entity.HasKey(e => e.AddressId).HasName("PK__Addresse__091C2AFBDB445F83");
+
+            entity.HasIndex(e => e.IsActive, "IX_Addresses_IsActive");
+
+            entity.HasIndex(e => new { e.Latitude, e.Longitude }, "IX_Addresses_Latitude_Longitude");
+
+            entity.Property(e => e.AddressLine1).HasMaxLength(255);
+            entity.Property(e => e.AddressLine2).HasMaxLength(255);
+            entity.Property(e => e.City).HasMaxLength(100);
+            entity.Property(e => e.Country)
+                .HasMaxLength(100)
+                .HasDefaultValue("Philippines");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Latitude).HasColumnType("decimal(10, 8)");
+            entity.Property(e => e.Longitude).HasColumnType("decimal(11, 8)");
+            entity.Property(e => e.PostalCode).HasMaxLength(20);
+            entity.Property(e => e.State).HasMaxLength(100);
+            entity.Property(e => e.Tag).HasMaxLength(50);
+            entity.Property(e => e.Title).HasMaxLength(100);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
 
         modelBuilder.Entity<DeliveryStatus>(entity =>
         {
@@ -122,6 +159,7 @@ public partial class FoodDeliveryDbContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -138,9 +176,50 @@ public partial class FoodDeliveryDbContext : DbContext
                 .HasConstraintName("FK__Merchants__UserI__403A8C7D");
         });
 
+        modelBuilder.Entity<MerchantAddress>(entity =>
+        {
+            entity.HasKey(e => e.MerchantAddressId).HasName("PK__Merchant__9D2397922DF66BA9");
+
+            entity.HasIndex(e => e.MerchantId, "IX_MerchantAddresses_MerchantId");
+
+            entity.HasIndex(e => new { e.MerchantId, e.AddressId }, "UQ_MerchantAddresses").IsUnique();
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Address).WithMany(p => p.MerchantAddresses)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("FK_MerchantAddresses_Addresses");
+
+            entity.HasOne(d => d.Merchant).WithMany(p => p.MerchantAddresses)
+                .HasForeignKey(d => d.MerchantId)
+                .HasConstraintName("FK_MerchantAddresses_Merchants");
+        });
+
+        modelBuilder.Entity<MerchantStoreHour>(entity =>
+        {
+            entity.HasKey(e => e.StoreHourId).HasName("PK__Merchant__2AA54F9BD9D312FD");
+
+            entity.HasIndex(e => new { e.MerchantId, e.DayOfWeek }, "IX_MerchantStoreHours_MerchantId_DayOfWeek");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Merchant).WithMany(p => p.MerchantStoreHours)
+                .HasForeignKey(d => d.MerchantId)
+                .HasConstraintName("FK_MerchantStoreHours_Merchants");
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BCF3FC874CB");
+
+            entity.HasIndex(e => e.AddressId, "IX_Orders_AddressId");
 
             entity.Property(e => e.Address).HasColumnType("text");
             entity.Property(e => e.DeliveryTime).HasColumnType("datetime");
@@ -149,6 +228,10 @@ public partial class FoodDeliveryDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.OrderStatusId).HasDefaultValue(1, "DF_Orders_OrderStatusId");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.AddressNavigation).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("FK_Orders_Addresses");
 
             entity.HasOne(d => d.Merchant).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.MerchantId)
@@ -226,6 +309,7 @@ public partial class FoodDeliveryDbContext : DbContext
         {
             entity.HasKey(e => e.PaymentMethodId).HasName("PK__PaymentM__DC31C1D3DF44025E");
 
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.MethodDescription).HasMaxLength(255);
             entity.Property(e => e.MethodName).HasMaxLength(50);
         });
@@ -252,6 +336,7 @@ public partial class FoodDeliveryDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -302,6 +387,7 @@ public partial class FoodDeliveryDbContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.PasswordHash)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -314,6 +400,27 @@ public partial class FoodDeliveryDbContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<UserAddress>(entity =>
+        {
+            entity.HasKey(e => e.UserAddressId).HasName("PK__UserAddr__5961BBB766DBD35B");
+
+            entity.HasIndex(e => e.UserId, "IX_UserAddresses_UserId");
+
+            entity.HasIndex(e => new { e.UserId, e.AddressId }, "UQ_UserAddresses").IsUnique();
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Address).WithMany(p => p.UserAddresses)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("FK_UserAddresses_Addresses");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserAddresses)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_UserAddresses_Users");
         });
 
         modelBuilder.Entity<WalletTransaction>(entity =>
