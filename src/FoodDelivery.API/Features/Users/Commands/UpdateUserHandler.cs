@@ -3,7 +3,7 @@ using MediatR;
 
 namespace FoodDelivery.API.Features.Users.Commands;
 
-public record UpdateUserCommand(int UserId, string Username, string? Email, string Role) : IRequest<bool>;
+public record UpdateUserCommand(int UserId, string Username, string? Password, string? Email, string Role) : IRequest<bool>;
 
 public class UpdateUserHandler(FoodDeliveryDbContext db) : IRequestHandler<UpdateUserCommand, bool>
 {
@@ -19,6 +19,13 @@ public class UpdateUserHandler(FoodDeliveryDbContext db) : IRequestHandler<Updat
 		entity.Username = request.Username;
 		entity.Email = request.Email;
 		entity.Role = request.Role;
+
+		// Hash the password if provided
+		if (!string.IsNullOrWhiteSpace(request.Password))
+		{
+			entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, 11);
+		}
+
 		entity.UpdatedAt = DateTime.Now;
 
 		await db.SaveChangesAsync(cancellationToken);
