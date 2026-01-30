@@ -1,6 +1,448 @@
-@FoodDelivery.API_HostAddress = http://localhost:5201
+@FoodDelivery.API_HostAddress = https://localhost:7113
+@accessToken = paste_your_token_here
+@refreshToken = paste_refresh_token_here
 
-GET {{FoodDelivery.API_HostAddress}}/weatherforecast/
-Accept: application/json
+###############################################################################
+# Authentication Endpoints (Public - No Authorization Required)
+###############################################################################
+
+### Register - Create New User
+POST {{FoodDelivery.API_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin",
+  "email": "admin@fooddelivery.com",
+  "role": "Admin"
+}
+
+### Login - Get Access Token
+POST {{FoodDelivery.API_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+### Validate Token
+POST {{FoodDelivery.API_HostAddress}}/api/auth/validate
+Authorization: Bearer {{accessToken}}
+
+### Refresh Token
+POST {{FoodDelivery.API_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Logout
+POST {{FoodDelivery.API_HostAddress}}/api/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+###############################################################################
+# Users Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Users
+GET {{FoodDelivery.API_HostAddress}}/api/users
+Authorization: Bearer {{accessToken}}
+
+### Get User by ID
+GET {{FoodDelivery.API_HostAddress}}/api/users/1
+Authorization: Bearer {{accessToken}}
+
+### Create User
+POST {{FoodDelivery.API_HostAddress}}/api/users
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin",
+  "email": "admin@fooddelivery.com",
+  "role": "Admin"
+}
+
+### Update User
+PUT {{FoodDelivery.API_HostAddress}}/api/users/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "username": "admin",
+  "passwordHash": "$2a$11$hash_here",
+  "email": "admin@fooddelivery.com",
+  "role": "Admin"
+}
+
+### Delete User
+DELETE {{FoodDelivery.API_HostAddress}}/api/users/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Merchants Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Merchants
+GET {{FoodDelivery.API_HostAddress}}/api/merchants
+Authorization: Bearer {{accessToken}}
+
+### Get Merchant by ID
+GET {{FoodDelivery.API_HostAddress}}/api/merchants/1
+Authorization: Bearer {{accessToken}}
+
+### Create Merchant
+POST {{FoodDelivery.API_HostAddress}}/api/merchants
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "name": "Test Restaurant",
+  "address": "123 Main Street, City",
+  "phoneNumber": "555-0100",
+  "email": "restaurant@example.com"
+}
+
+### Update Merchant
+PUT {{FoodDelivery.API_HostAddress}}/api/merchants/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "merchantId": 1,
+  "userId": 1,
+  "name": "Updated Restaurant",
+  "address": "456 New Street, City",
+  "phoneNumber": "555-0200",
+  "email": "updated@example.com"
+}
+
+### Delete Merchant
+DELETE {{FoodDelivery.API_HostAddress}}/api/merchants/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Products Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Products
+GET {{FoodDelivery.API_HostAddress}}/api/products
+Authorization: Bearer {{accessToken}}
+
+### Get Product by ID
+GET {{FoodDelivery.API_HostAddress}}/api/products/1
+Authorization: Bearer {{accessToken}}
+
+### Get Products by Merchant
+GET {{FoodDelivery.API_HostAddress}}/api/products/merchant/1
+Authorization: Bearer {{accessToken}}
+
+### Create Product
+POST {{FoodDelivery.API_HostAddress}}/api/products
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "merchantId": 1,
+  "name": "Pizza Margherita",
+  "description": "Classic Italian pizza",
+  "price": 12.99,
+  "stockQuantity": 50
+}
+
+### Update Product
+PUT {{FoodDelivery.API_HostAddress}}/api/products/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "merchantId": 1,
+  "name": "Pizza Margherita Deluxe",
+  "description": "Premium Italian pizza",
+  "price": 15.99,
+  "stockQuantity": 30
+}
+
+### Delete Product
+DELETE {{FoodDelivery.API_HostAddress}}/api/products/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Orders Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Orders
+GET {{FoodDelivery.API_HostAddress}}/api/orders
+Authorization: Bearer {{accessToken}}
+
+### Get Order by ID
+GET {{FoodDelivery.API_HostAddress}}/api/orders/1
+Authorization: Bearer {{accessToken}}
+
+### Get Orders by User
+GET {{FoodDelivery.API_HostAddress}}/api/orders/user/1
+Authorization: Bearer {{accessToken}}
+
+### Create Order
+POST {{FoodDelivery.API_HostAddress}}/api/orders
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "merchantId": 1,
+  "totalAmount": 25.99,
+  "orderStatusId": 1,
+  "address": "789 Customer St, City",
+  "deliveryTime": "2025-02-01T18:00:00"
+}
+
+### Update Order
+PUT {{FoodDelivery.API_HostAddress}}/api/orders/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "userId": 1,
+  "merchantId": 1,
+  "totalAmount": 30.99,
+  "orderStatusId": 2,
+  "address": "789 Customer St, City",
+  "deliveryTime": "2025-02-01T18:30:00"
+}
+
+### Delete Order
+DELETE {{FoodDelivery.API_HostAddress}}/api/orders/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Order Items Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Order Items
+GET {{FoodDelivery.API_HostAddress}}/api/orderitems
+Authorization: Bearer {{accessToken}}
+
+### Get Order Item by ID
+GET {{FoodDelivery.API_HostAddress}}/api/orderitems/1
+Authorization: Bearer {{accessToken}}
+
+### Get Order Items by Order
+GET {{FoodDelivery.API_HostAddress}}/api/orderitems/order/1
+Authorization: Bearer {{accessToken}}
+
+### Create Order Item
+POST {{FoodDelivery.API_HostAddress}}/api/orderitems
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "productId": 1,
+  "quantity": 2,
+  "price": 12.99
+}
+
+### Update Order Item
+PUT {{FoodDelivery.API_HostAddress}}/api/orderitems/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "orderItemId": 1,
+  "orderId": 1,
+  "productId": 1,
+  "quantity": 3,
+  "price": 12.99
+}
+
+### Delete Order Item
+DELETE {{FoodDelivery.API_HostAddress}}/api/orderitems/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Payments Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Payments
+GET {{FoodDelivery.API_HostAddress}}/api/payments
+Authorization: Bearer {{accessToken}}
+
+### Get Payment by ID
+GET {{FoodDelivery.API_HostAddress}}/api/payments/1
+Authorization: Bearer {{accessToken}}
+
+### Get Payments by Order
+GET {{FoodDelivery.API_HostAddress}}/api/payments/order/1
+Authorization: Bearer {{accessToken}}
+
+### Create Payment
+POST {{FoodDelivery.API_HostAddress}}/api/payments
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "amount": 25.99,
+  "paymentMethodId": 1,
+  "paymentStatusId": 1
+}
+
+### Update Payment
+PUT {{FoodDelivery.API_HostAddress}}/api/payments/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "paymentId": 1,
+  "orderId": 1,
+  "amount": 25.99,
+  "paymentMethodId": 1,
+  "paymentStatusId": 2
+}
+
+### Delete Payment
+DELETE {{FoodDelivery.API_HostAddress}}/api/payments/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Driver Assignments Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Driver Assignments
+GET {{FoodDelivery.API_HostAddress}}/api/driverassignments
+Authorization: Bearer {{accessToken}}
+
+### Get Driver Assignment by ID
+GET {{FoodDelivery.API_HostAddress}}/api/driverassignments/1
+Authorization: Bearer {{accessToken}}
+
+### Get Driver Assignments by Driver
+GET {{FoodDelivery.API_HostAddress}}/api/driverassignments/driver/1
+Authorization: Bearer {{accessToken}}
+
+### Create Driver Assignment
+POST {{FoodDelivery.API_HostAddress}}/api/driverassignments
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "driverId": 1,
+  "deliveryStatusId": 1
+}
+
+### Update Driver Assignment
+PUT {{FoodDelivery.API_HostAddress}}/api/driverassignments/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "assignmentId": 1,
+  "orderId": 1,
+  "driverId": 1,
+  "deliveryStatusId": 2
+}
+
+### Delete Driver Assignment
+DELETE {{FoodDelivery.API_HostAddress}}/api/driverassignments/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Driver Wallets Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Driver Wallets
+GET {{FoodDelivery.API_HostAddress}}/api/driverwallets
+Authorization: Bearer {{accessToken}}
+
+### Get Driver Wallet by ID
+GET {{FoodDelivery.API_HostAddress}}/api/driverwallets/1
+Authorization: Bearer {{accessToken}}
+
+### Get Driver Wallet by Driver
+GET {{FoodDelivery.API_HostAddress}}/api/driverwallets/driver/1
+Authorization: Bearer {{accessToken}}
+
+### Create Driver Wallet
+POST {{FoodDelivery.API_HostAddress}}/api/driverwallets
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "driverId": 1,
+  "balance": 0.00
+}
+
+### Update Driver Wallet
+PUT {{FoodDelivery.API_HostAddress}}/api/driverwallets/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "walletId": 1,
+  "driverId": 1,
+  "balance": 150.50
+}
+
+### Delete Driver Wallet
+DELETE {{FoodDelivery.API_HostAddress}}/api/driverwallets/1
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# Wallet Transactions Endpoints (Protected - Requires Authorization)
+###############################################################################
+
+### Get All Wallet Transactions
+GET {{FoodDelivery.API_HostAddress}}/api/wallettransactions
+Authorization: Bearer {{accessToken}}
+
+### Get Wallet Transaction by ID
+GET {{FoodDelivery.API_HostAddress}}/api/wallettransactions/1
+Authorization: Bearer {{accessToken}}
+
+### Get Wallet Transactions by Wallet
+GET {{FoodDelivery.API_HostAddress}}/api/wallettransactions/wallet/1
+Authorization: Bearer {{accessToken}}
+
+### Create Wallet Transaction
+POST {{FoodDelivery.API_HostAddress}}/api/wallettransactions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "walletId": 1,
+  "amount": 25.00,
+  "transactionType": "Credit",
+  "description": "Delivery payment"
+}
+
+### Update Wallet Transaction
+PUT {{FoodDelivery.API_HostAddress}}/api/wallettransactions/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "transactionId": 1,
+  "walletId": 1,
+  "amount": 25.00,
+  "transactionType": "Credit",
+  "description": "Updated delivery payment"
+}
+
+### Delete Wallet Transaction
+DELETE {{FoodDelivery.API_HostAddress}}/api/wallettransactions/1
+Authorization: Bearer {{accessToken}}
 
 ###
